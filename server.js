@@ -26,7 +26,7 @@ const database = {
 };
 
 app.get("/", (req, res) => {
-  res.send("this is working");
+  res.send(database.users);
 });
 
 app.post("/signin", (req, res) => {
@@ -40,8 +40,23 @@ app.post("/signin", (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("app is running on port 3000");
+app.post("/register", (req, res) => {
+  const { name, email, password } = req.body;
+
+  database.users.push({
+    id: 789,
+    name: name,
+    email: email,
+    password: password,
+    entries: 0,
+    joined: new Date(),
+  });
+
+  res.json(database.users[database.users.length - 1]);
+});
+
+app.listen(3001, () => {
+  console.log("app is running on port 3001");
 });
 
 /*
