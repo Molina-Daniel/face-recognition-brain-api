@@ -1,8 +1,10 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const saltRounds = 10;
 
@@ -41,37 +43,37 @@ app.get("/", (req, res) => {
 
 app.post("/signin", (req, res) => {
   // Load hash from your password DB.
-  bcrypt.compare(
-    "apples",
-    "$2b$10$tM0ZQieWGC.oVRLHCTGIUO3tnTSpEn.NJcO.pzWL5oDjUISd7S32O",
-    function (err, result) {
-      console.log("correct password: ", result);
-    }
-  );
-  bcrypt.compare(
-    "veggies",
-    "$2b$10$tM0ZQieWGC.oVRLHCTGIUO3tnTSpEn.NJcO.pzWL5oDjUISd7S32O",
-    function (err, result) {
-      console.log("correct password: ", result);
-    }
-  );
+  // bcrypt.compare(
+  //   "apples",
+  //   "$2b$10$tM0ZQieWGC.oVRLHCTGIUO3tnTSpEn.NJcO.pzWL5oDjUISd7S32O",
+  //   function (err, result) {
+  //     console.log("correct password: ", result);
+  //   }
+  // );
+  // bcrypt.compare(
+  //   "veggies",
+  //   "$2b$10$tM0ZQieWGC.oVRLHCTGIUO3tnTSpEn.NJcO.pzWL5oDjUISd7S32O",
+  //   function (err, result) {
+  //     console.log("correct password: ", result);
+  //   }
+  // );
 
   if (
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
   ) {
-    res.json("Login Success!");
+    res.json("success");
   } else {
-    res.json("Login Error!");
+    res.status(400).json("error");
   }
 });
 
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
 
-  bcrypt.hash(password, saltRounds, function (err, hash) {
-    console.log(hash);
-  });
+  // bcrypt.hash(password, saltRounds, function (err, hash) {
+  //   console.log(hash);
+  // });
 
   database.users.push({
     id: "789",
