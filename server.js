@@ -1,7 +1,10 @@
 import express from "express";
+import bcrypt from "bcrypt";
 
 const app = express();
 app.use(express.json());
+
+const saltRounds = 10;
 
 // Mimic the future database
 const database = {
@@ -23,6 +26,13 @@ const database = {
       joined: new Date(),
     },
   ],
+  login: [
+    {
+      id: "789",
+      hash: "",
+      email: "peter@gmail.com",
+    },
+  ],
 };
 
 app.get("/", (req, res) => {
@@ -30,6 +40,22 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signin", (req, res) => {
+  // Load hash from your password DB.
+  bcrypt.compare(
+    "apples",
+    "$2b$10$tM0ZQieWGC.oVRLHCTGIUO3tnTSpEn.NJcO.pzWL5oDjUISd7S32O",
+    function (err, result) {
+      console.log("correct password: ", result);
+    }
+  );
+  bcrypt.compare(
+    "veggies",
+    "$2b$10$tM0ZQieWGC.oVRLHCTGIUO3tnTSpEn.NJcO.pzWL5oDjUISd7S32O",
+    function (err, result) {
+      console.log("correct password: ", result);
+    }
+  );
+
   if (
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
@@ -42,6 +68,10 @@ app.post("/signin", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
+
+  bcrypt.hash(password, saltRounds, function (err, hash) {
+    console.log(hash);
+  });
 
   database.users.push({
     id: "789",
