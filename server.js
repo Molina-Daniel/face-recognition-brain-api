@@ -4,6 +4,7 @@ import cors from "cors";
 import knex from "knex";
 import { handleRegister } from "./controllers/register.js";
 import { handleSignin } from "./controllers/signin.js";
+import { handleProfile } from "./controllers/profile.js";
 
 const db = knex({
   client: "pg",
@@ -37,18 +38,7 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/profile/:id", (req, res) => {
-  const { id } = req.params;
-
-  db.select("*")
-    .from("users")
-    .where({ id: id })
-    .then((user) => {
-      if (user.length) {
-        res.json(user[0]);
-      } else {
-        res.status(404).json("Wrong user id. User not found!");
-      }
-    });
+  handleProfile(req, res, db);
 });
 
 app.put("/image", (req, res) => {
