@@ -1,6 +1,24 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import cors from "cors";
+import knex from "knex";
+
+const db = knex({
+  client: "pg",
+  connection: {
+    host: "127.0.0.1",
+    port: 5432,
+    user: "postgres",
+    password: "",
+    database: "face-recognition-brain",
+  },
+});
+
+// db.select("*")
+//   .from("users")
+//   .then((data) => {
+//     console.log(data);
+//   });
 
 const app = express();
 app.use(express.json());
@@ -71,19 +89,18 @@ app.post("/signin", (req, res) => {
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
 
+  db("users")
+    .returning("*")
+    .insert({ email: email, name: name, joined: new Date() })
+    .then((user) => {
+      res.json(user[0]);
+    })
+    .catch((err) => res.status(400).json("Unable to register"));
+
   // bcrypt.hash(password, saltRounds, function (err, hash) {
   //   console.log(hash);
   // });
 
-  database.users.push({
-    id: "789",
-    name: name,
-    email: email,
-    entries: 0,
-    joined: new Date(),
-  });
-
-  res.json(database.users[database.users.length - 1]);
 });
 
 app.get("/profile/:id", (req, res) => {
