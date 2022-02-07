@@ -14,12 +14,6 @@ const db = knex({
   },
 });
 
-// db.select("*")
-//   .from("users")
-//   .then((data) => {
-//     console.log(data);
-//   });
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -100,23 +94,21 @@ app.post("/register", (req, res) => {
   // bcrypt.hash(password, saltRounds, function (err, hash) {
   //   console.log(hash);
   // });
-
 });
 
 app.get("/profile/:id", (req, res) => {
   const { id } = req.params;
-  let found = false;
 
-  database.users.forEach((user) => {
-    if (user.id === id) {
-      found = true;
-      return res.json(user);
-    }
-  });
-
-  if (!found) {
-    res.status(404).json("Wrong user id. User not found!");
-  }
+  db.select("*")
+    .from("users")
+    .where({ id: id })
+    .then((user) => {
+      if (user.length) {
+        res.json(user[0]);
+      } else {
+        res.status(404).json("Wrong user id. User not found!");
+      }
+    });
 });
 
 app.put("/image", (req, res) => {
