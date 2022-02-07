@@ -21,7 +21,11 @@ app.use(cors());
 const saltRounds = 10;
 
 app.get("/", (req, res) => {
-  res.send(database.users);
+  db.select("*")
+    .from("users")
+    .then((users) => {
+      res.send(users);
+    });
 });
 
 app.post("/signin", (req, res) => {
