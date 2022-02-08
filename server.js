@@ -5,7 +5,7 @@ import knex from "knex";
 import { handleRegister } from "./controllers/register.js";
 import { handleSignin } from "./controllers/signin.js";
 import { handleProfile } from "./controllers/profile.js";
-import { handleImage } from "./controllers/image.js";
+import { handleApiCall, handleImage } from "./controllers/image.js";
 
 const db = knex({
   client: "pg",
@@ -44,6 +44,9 @@ app.get("/profile/:id", (req, res) => {
 
 app.put("/image", (req, res) => {
   handleImage(req, res, db);
+});
+app.post("/imageurl", (req, res) => {
+  handleApiCall(req, res);
 });
 
 app.listen(3001, () => {
