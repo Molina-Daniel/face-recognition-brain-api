@@ -10,11 +10,10 @@ import { handleApiCall, handleImage } from "./controllers/image.js";
 const db = knex({
   client: "pg",
   connection: {
-    host: "127.0.0.1",
-    port: 5432,
-    user: "postgres",
-    password: "",
-    database: "face-recognition-brain",
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
 });
 
@@ -23,15 +22,12 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send("It is working!!");
+  db.select("*")
+    .from("users")
+    .then((users) => {
+      res.send(users);
+    });
 });
-// app.get("/", (req, res) => {
-//   db.select("*")
-//     .from("users")
-//     .then((users) => {
-//       res.send(users);
-//     });
-// });
 
 app.post("/signin", (req, res) => {
   handleSignin(req, res, db, bcrypt);
